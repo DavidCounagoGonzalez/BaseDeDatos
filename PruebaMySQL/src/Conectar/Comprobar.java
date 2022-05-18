@@ -1,25 +1,15 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package Conectar;
 
-import com.mysql.cj.xdevapi.Statement;
+
 import java.sql.Connection;
-import java.sql.DriverManager;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
-/**
- *
- * @author david
- */
+
 public class Comprobar extends javax.swing.JFrame {
 
-    /**
-     * Creates new form Comprobar
-     */
+
     public Comprobar() {
         initComponents();
     }
@@ -316,14 +306,17 @@ public class Comprobar extends javax.swing.JFrame {
 
     private void btnEliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminarActionPerformed
             
+        //Creamos un objeto de la clase Conexión para llamar al método que nos permitirá conectarnos.
         Conexion con = new Conexion();
         Connection conexion= con.Conecta();
         
         int res=0;
+        //Creamos una variable que recoge el dato del ID insertado para utilizarlo en la función delete.
         String ident = IDLabel.getText();
         String eliminar =  "DELETE from electrodomesticos WHERE  id="+ident;
         
         try{
+            //Llamamos a la función con el prepareStatement y recojemos el valor del Update para verificra si se ha realizado correctamente.
            java.sql.PreparedStatement st = con.Conecta().prepareStatement(eliminar);
             res= st.executeUpdate();
             if (res>0){
@@ -332,6 +325,7 @@ public class Comprobar extends javax.swing.JFrame {
             st=null;
             conexion.close();
             
+            //Vaciamos todas las casillas para realizar la siguiente acción.
             IDLabel.setText("");
             NameLabel.setText("");
             PrecioLabel.setText("");
@@ -350,13 +344,16 @@ public class Comprobar extends javax.swing.JFrame {
 
     private void btnAceptarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAceptarActionPerformed
         
+        //Conectamos cin el método conecta.
         Conexion con = new Conexion();
         Connection conexion= con.Conecta();
         
         try{
+            //Creamos nuestra función de insert y designamos los values con ? para faciliatar su inserción 
             String query = "INSERT INTO electrodomesticos (nombre,precio,descripcion) values(?,?,?)";
             java.sql.PreparedStatement statement = conexion.prepareStatement(query);
             
+            //Indicamos con un número la posición en la que se colocará el valor dde cada casilla según las ? de la función.
             statement.setString(1, NameLabel.getText());
             statement.setFloat(2, Float.parseFloat(PrecioLabel.getText()));
             statement.setString(3, Descripcion.getText());
@@ -388,8 +385,10 @@ public class Comprobar extends javax.swing.JFrame {
         String ident = IDBuscar.getText();
         
         try{
+        //Creamos una función que busque lso registros que contenga en id indicado en su campo de Texto.    
         String sql ="SELECT * FROM electrodomesticos WHERE id="+ident;
         
+        //Misma funcionalidad que el Listado entero(función explicada en la clase main más abajo) pero en otra tabla de la interfaz.
         java.sql.Statement st;
         
         DefaultTableModel modelo = new DefaultTableModel();
@@ -432,6 +431,8 @@ public class Comprobar extends javax.swing.JFrame {
         Conexion con = new Conexion();
         Connection conexion = con.Conecta();
         
+        //simplemente sirve para volver a lanzar el listado entero(función en la clase main más abajo) por si se ha realizado un cambio en la tabla de la base de datos
+        //y se quiere ver reflejado en la interfaz.
         try{
         String sql ="SELECT * FROM electrodomesticos";
         
@@ -473,6 +474,7 @@ public class Comprobar extends javax.swing.JFrame {
         try{
             String ref = IDLabel.getText();
             
+            //Creamos una función de Update siguiende a continuación con la misma estructura usada para la inserción de registros.
             String actualizar = "UPDATE electrodomesticos set nombre=?,precio=? ,descripcion=? "+" WHERE id="+ref;
             
             java.sql.PreparedStatement st = con.Conecta().prepareStatement(actualizar);
@@ -541,10 +543,12 @@ public class Comprobar extends javax.swing.JFrame {
         Conexion con = new Conexion();
         Connection conexion = con.Conecta();
         
+        //Creamos una función que seleccione todos los registros de nuestra tabla
         String sql ="SELECT * FROM electrodomesticos";
         
         java.sql.Statement st;
         
+        //Creamos un modelo para nuestra tabla creada en la interfaz.
         DefaultTableModel modelo = new DefaultTableModel();
         
         modelo.addColumn("id");
@@ -554,12 +558,14 @@ public class Comprobar extends javax.swing.JFrame {
         
         table.setModel(modelo);
         
+        //Creamos un Array en el que guardar los registros para poder añadirlos a a la tabla.
         String[] dato = new String [4];
         try{
         st = conexion.createStatement();
         
         java.sql.ResultSet result = st.executeQuery(sql);
         
+        //Creamos un while para que mientras existan regsitros se añadan los datos al array y finalmente se va añadiendo a la tabla.
         while(result.next()){
             dato[0]=result.getString(1);
             dato[1]=result.getString(2);
