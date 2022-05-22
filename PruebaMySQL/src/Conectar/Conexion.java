@@ -1,4 +1,3 @@
-
 package Conectar;
 
 import java.sql.Connection;
